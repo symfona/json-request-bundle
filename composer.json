@@ -1,0 +1,40 @@
+{
+    "name": "symfona/json-request-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony JSON Request Bundle",
+    "keywords": ["php", "symfony", "http", "json", "request", "bundle"],
+    "homepage": "https://github.com/symfona/json-request-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sofy Korzhova",
+            "email": "sofykorzhova@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "ext-json": "*",
+        "symfony/framework-bundle": "^5.3",
+        "symfony/property-access": "^5.3",
+        "symfony/serializer": "^5.3"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.12",
+        "phpunit/phpunit": "^9.5",
+        "symfony/browser-kit": "^5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Symfona\\Bundle\\JsonRequestBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Symfona\\Bundle\\JsonRequestBundle\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+}
