@@ -8,7 +8,6 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
-use Symfony\Component\Serializer\Exception\UnsupportedException;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -33,7 +32,7 @@ final class DataTransferObjectArgumentResolver implements ArgumentValueResolverI
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         try {
-            yield $this->createObject($request, $argument);
+            yield from $this->createObject($request, $argument);
         } catch (\TypeError $exception) {
             throw new NotNormalizableValueException($exception->getMessage());
         }
@@ -61,16 +60,14 @@ final class DataTransferObjectArgumentResolver implements ArgumentValueResolverI
         return $data;
     }
 
-    private function createObject(Request $request, ArgumentMetadata $argument): object
+    private function createObject(Request $request, ArgumentMetadata $argument): \Generator
     {
         $data = $this->getRequestData($request);
 
-        if (!$this->serializer instanceof DenormalizerInterface) {
-            throw new UnsupportedException('Serializer can not denormalize data');
+        if ($this->serializer instanceof DenormalizerInterface) {
+            yield $this->serializer->denormalize($data, $argument->getType() ?: '', null, [
+                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+            ]);
         }
-
-        return $this->serializer->denormalize($data, $argument->getType() ?: '', null, [
-            AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
-        ]);
     }
 }
